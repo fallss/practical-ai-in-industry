@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor & IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node & Marp cache
+node_modules/
+.npm/
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+.venv/
+env/
+.pytest_cache/
+
+# Export artifacts (optional/temp)
+*.log
