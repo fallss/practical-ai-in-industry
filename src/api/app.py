@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from src.config import API_TITLE, API_VERSION, API_DESCRIPTION, STATIC_DIR
+from src.config import API_TITLE, API_VERSION, API_DESCRIPTION, STATIC_DIR, PRESENTATION_DIR
 from src.models.pipeline import MLServingPipeline
 from src.api.routes import router
 
@@ -45,9 +45,13 @@ async def add_process_time_header(request: Request, call_next):
 # API Routes
 app.include_router(router)
 
-# Mount static directory and root index
+# Mount static web directory
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Mount presentation directory for online viewing
+if PRESENTATION_DIR.exists():
+    app.mount("/presentation", StaticFiles(directory=PRESENTATION_DIR, html=True), name="presentation")
 
 @app.get("/", include_in_schema=False)
 async def serve_index():
@@ -55,3 +59,10 @@ async def serve_index():
     if index_file.exists():
         return FileResponse(index_file)
     return {"message": "Welcome to OTA Production AI Engine API. Visit /docs for OpenAPI specs."}
+
+@app.get("/slides", include_in_schema=False)
+async def serve_slides():
+    slide_file = PRESENTATION_DIR / "presentation.html"
+    if slide_file.exists():
+        return FileResponse(slide_file)
+    return {"message": "Presentation slides not found."}

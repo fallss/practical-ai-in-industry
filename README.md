@@ -9,14 +9,14 @@
 [![Docker](https://img.shields.io/badge/Container-Docker%20Ready-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 [![Tests: 7 Passed](https://img.shields.io/badge/PyTest-7%20Passed%20(100%25)-brightgreen.svg?logo=pytest&logoColor=white)](tests/)
 [![Serving Latency](https://img.shields.io/badge/Serving%20Latency-%3C15ms-success.svg)](#ml-model-pipeline--feature-engineering)
-[![Presentation: Marp](https://img.shields.io/badge/Slides-Marp%20Interactive-0288d1.svg)](presentation.html)
+[![Presentation: Marp](https://img.shields.io/badge/Slides-Marp%20Interactive-0288d1.svg)](presentation/presentation.html)
 
 <p align="center">
   <b>A dual-purpose industry resource:</b><br>
   An executive keynote presentation deck detailing real-world AI implementation and career preparation, paired with an end-to-end, production-grade <b>Online Travel Agent (OTA) Search Ranking & Cross-Sell Recommendation Service</b>.
 </p>
 
-[Explore Slide Deck](presentation.html) • [Live Dashboard](http://localhost:8000) • [Swagger API Docs](http://localhost:8000/docs) • [Architecture](#system-architecture)
+[Explore Slide Deck](presentation/presentation.html) • [Live Dashboard](http://localhost:8000) • [Swagger API Docs](http://localhost:8000/docs) • [Architecture](#system-architecture) • [Deployment Guide](#cloud-deployment-guide)
 
 ---
 
@@ -29,25 +29,83 @@
 
 ## 📑 Table of Contents
 
-1. [Executive Summary & Vision](#executive-summary--vision)
-2. [Part I: The Presentation Deck (Theory & Industry Insights)](#part-i-the-presentation-deck-theory--industry-insights)
+1. [Folder Structure & Project Organization](#folder-structure--project-organization)
+2. [Executive Summary & Vision](#executive-summary--vision)
+3. [Part I: The Presentation Deck (Theory & Industry Insights)](#part-i-the-presentation-deck-theory--industry-insights)
    - [Speaker & Background](#speaker--background)
    - [Curriculum & Presentation Breakdown](#curriculum--presentation-breakdown)
    - [Key Industry Mental Models](#key-industry-mental-models)
    - [How to View and Deliver the Slides](#how-to-view-and-deliver-the-slides)
-3. [Part II: The Production ML Engine (Implementation)](#part-ii-the-production-ml-engine-implementation)
+4. [Part II: The Production ML Engine (Implementation)](#part-ii-the-production-ml-engine-implementation)
    - [Problem Statement & OTA Context](#problem-statement--ota-context)
    - [System Architecture](#system-architecture)
    - [ML Model Pipeline & Feature Engineering](#ml-model-pipeline--feature-engineering)
    - [Cross-Sell Collaborative Filtering Engine](#cross-sell-collaborative-filtering-engine)
    - [Interactive Dashboard & Telemetry](#interactive-dashboard--telemetry)
-4. [Part III: Developer & Operations Guide](#part-iii-developer--operations-guide)
+5. [Part III: Developer & Operations Guide](#part-iii-developer--operations-guide)
    - [Quick Start Installation](#quick-start-installation)
    - [API Reference & Endpoints](#api-reference--endpoints)
    - [Automated Testing with PyTest](#automated-testing-with-pytest)
    - [Production Docker Deployment](#production-docker-deployment)
-5. [Project Directory Layout](#project-directory-layout)
-6. [Attribution & License](#attribution--license)
+6. [Part IV: Cloud Deployment Guide (Free & Production)](#part-iv-cloud-deployment-guide-free--production)
+   - [Option A: 1-Click Deploy on Render.com (Recommended Free Hosting)](#option-a-1-click-deploy-on-rendercom-recommended-free-hosting)
+   - [Option B: Railway.app (Automatic Docker Deployment)](#option-b-railwayapp-automatic-docker-deployment)
+   - [Option C: Hugging Face Spaces (Free ML Portfolio Hosting)](#option-c-hugging-face-spaces-free-ml-portfolio-hosting)
+   - [Option D: Self-Hosted Cloud VPS (Docker Compose)](#option-d-self-hosted-cloud-vps-docker-compose)
+7. [Attribution & License](#attribution--license)
+
+---
+
+## 🗂 Folder Structure & Project Organization
+
+The repository is organized into distinct, clean modules separating the **Keynote Presentation** from the **Production ML Engineering Application**:
+
+```text
+practical-ai-in-industry/
+│
+├── 📊 presentation/                    # 1. KEYNOTE PRESENTATION MODULE
+│   ├── presentation.md                # Source presentation in Marp Markdown
+│   └── presentation.html              # Standalone interactive slides with speaker notes
+│
+├── 🧠 src/                            # 2. CORE MACHINE LEARNING SERVICE
+│   ├── config.py                      # Global configuration and path management
+│   ├── data/
+│   │   └── generator.py               # Synthetic OTA catalog and interaction generator
+│   ├── models/
+│   │   ├── train_ranking.py           # Feature engineering & HistGradientBoosting trainer
+│   │   ├── recommender.py             # Bayesian collaborative filtering co-booking matrix
+│   │   └── pipeline.py                # In-memory ML inference pipeline singleton (<15ms)
+│   └── api/
+│       ├── app.py                     # FastAPI application, latency tracing & static mounts
+│       ├── routes.py                  # API routes (/search, /cross-sell, /health)
+│       └── schemas.py                 # Pydantic V2 strict request/response schemas
+│
+├── 🎨 static/                         # 3. INTERACTIVE WEB DASHBOARD
+│   ├── index.html                     # Dark glassmorphism dashboard layout
+│   ├── style.css                      # Premium UI design system with glowing accents
+│   └── app.js                         # Dynamic telemetry, sliders, and cross-sell modal
+│
+├── 🧪 tests/                          # 4. AUTOMATED TEST SUITE
+│   ├── test_api.py                    # Integration tests for FastAPI endpoints
+│   └── test_models.py                 # Unit tests for data generator & feature pipeline
+│
+├── 📦 data/                           # 5. DATA ASSETS
+│   ├── hotels.json                    # Catalog dataset (70 hotels in Indonesia)
+│   └── interactions.csv               # 34,000+ user session & conversion logs
+│
+├── 💾 models/                         # 6. SERIALIZED ML ARTIFACTS
+│   ├── ranking_model.joblib           # Trained conversion ranking model
+│   └── recommender_artifacts.joblib   # Serialized cross-sell co-booking matrix
+│
+├── 🐳 Deployment & Config
+│   ├── Dockerfile                     # Multi-stage production container build
+│   ├── docker-compose.yml             # Container orchestration
+│   ├── render.yaml                    # 1-Click Blueprint for Render.com deployment
+│   ├── pyproject.toml / pytest.ini    # Python build and test configurations
+│   ├── requirements.txt               # Locked Python dependencies
+│   ├── LICENSE                        # GNU GPL-3.0 License
+│   └── README.md                      # Comprehensive documentation
+```
 
 ---
 
@@ -56,20 +114,8 @@
 Most academic curricula and tutorials treat machine learning as an isolated exercise in Kaggle competitions or Jupyter Notebooks. In reality, **over 80% of a Machine Learning Engineer's day-to-day work is software and systems engineering**: data pipelines, low-latency API serving, containerization, monitoring, and business alignment.
 
 This repository serves as a **complete bridge from theory to production**:
-
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                   PRACTICAL AI IN INDUSTRY REPOSITORY                  │
-├───────────────────────────────────┬────────────────────────────────────┤
-│   PART 1: THE PRESENTATION DECK   │   PART 2: THE REFERENCE SERVICE    │
-│   (Mindset, Stacks & Career)      │   (Production-Grade Codebase)      │
-│                                   │                                    │
-│ • Real-World Industry Economics   │ • FastAPI Low-Latency Serving      │
-│ • Modern MLOps & LLMOps Stacks    │ • Scikit-Learn Conversion Ranker   │
-│ • Kaggle vs. Production Systems   │ • Bayesian Cross-Sell Recommender  │
-│ • University-to-Career Roadmap    │ • PyTest + Docker + Web UI         │
-└───────────────────────────────────┴────────────────────────────────────┘
-```
+- **Part I**: Slides and lessons learned from a practicing Machine Learning Engineer at **tiket.com**.
+- **Part II**: A runnable, production-grade microservice demonstrating real-world ranking and recommendation algorithms.
 
 ---
 
@@ -77,8 +123,8 @@ This repository serves as a **complete bridge from theory to production**:
 
 ### Speaker & Background
 - **Speaker:** **Setia Budi**
-- **Role:** Machine Learning Engineer at **tiket.com** (one of Southeast Asia's leading Online Travel Agents).
-- **Format:** [Marp](https://marp.app/) Markdown (`presentation.md`) & Standalone Interactive HTML (`presentation.html`).
+- **Role:** Machine Learning Engineer at **tiket.com** (Online Travel Agent).
+- **Format:** [Marp](https://marp.app/) Markdown (`presentation/presentation.md`) & Standalone Interactive HTML (`presentation/presentation.html`).
 
 ### Curriculum & Presentation Breakdown
 
@@ -132,13 +178,13 @@ The presentation is organized into 8 sequential modules:
 The slide deck is built with [Marp](https://marp.app/) and includes custom GitHub Dark styling, typography, and presenter notes for every slide.
 
 #### 1. Open the Pre-compiled Interactive Slides
-Open `presentation.html` directly in any web browser:
+Open `presentation/presentation.html` directly in any web browser, or access `/slides` when running the application:
 ```bash
 # On Linux
-xdg-open presentation.html
+xdg-open presentation/presentation.html
 
 # On macOS
-open presentation.html
+open presentation/presentation.html
 ```
 - **Press `P`**: Enters **Presenter Mode** with dual-screen view, speaker notes, and real-time elapsed timer.
 - **Press `F`**: Enters **Fullscreen Presentation Mode**.
@@ -147,19 +193,17 @@ open presentation.html
 #### 2. Edit or Recompile with Marp CLI
 ```bash
 # Run local live-reload preview server
-npx @marp-team/marp-cli -s .
+npx @marp-team/marp-cli -s presentation/
 
 # Export to HTML, PDF, or PowerPoint
-npx @marp-team/marp-cli presentation.md -o presentation.html
-npx @marp-team/marp-cli presentation.md --pdf -o presentation.pdf
-npx @marp-team/marp-cli presentation.md --pptx -o presentation.pptx
+npx @marp-team/marp-cli presentation/presentation.md -o presentation/presentation.html
+npx @marp-team/marp-cli presentation/presentation.md --pdf -o presentation/presentation.pdf
+npx @marp-team/marp-cli presentation/presentation.md --pptx -o presentation/presentation.pptx
 ```
 
 ---
 
 ## ⚙️ Part II: The Production ML Engine (Implementation)
-
-To embody the teachings of the keynote, this repository includes a complete, enterprise-standard reference implementation of an **Online Travel Agent (OTA) Search Ranking & Cross-Sell Service**.
 
 ### Problem Statement & OTA Context
 When a user searches for hotels in Bali or Jakarta with a specific budget, the platform must:
@@ -242,6 +286,7 @@ The application comes with a pre-configured dashboard (`static/index.html`) demo
 - **Live Telemetry Banner:** Real-time server latency ticker, model type, ROC-AUC score, and candidate count.
 - **Dynamic Query Controls:** City selector, interactive budget slider with real-time IDR currency formatting, star class selector, and algorithmic sorting toggles (`⚡ ML Conversion AI`, `Lowest Price`, `Top Rated`).
 - **Real-Time Cross-Sell Modal:** Instant add-on recommendation preview with co-booking affinity percentages upon clicking any hotel card.
+- **Direct Link to Keynote Slides:** Navbar includes quick navigation to `/slides` for presentation delivery.
 
 ---
 
@@ -272,6 +317,7 @@ uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
 
 Access the services in your browser:
 - **Interactive UI:** [http://localhost:8000](http://localhost:8000)
+- **Keynote Slide Deck:** [http://localhost:8000/slides](http://localhost:8000/slides)
 - **Interactive Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 - **Alternative ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
@@ -391,14 +437,14 @@ tests/test_models.py::test_data_generation PASSED                        [ 71%]
 tests/test_models.py::test_feature_engineering PASSED                    [ 85%]
 tests/test_models.py::test_serving_pipeline_instance PASSED              [100%]
 
-========================= 7 passed in 3.55s =========================
+========================= 7 passed in 3.41s =========================
 ```
 
 ---
 
 ### Production Docker Deployment
 
-Deploy the entire service using containerization:
+Deploy the entire service locally or on a server using Docker:
 
 ```bash
 # 1. Build and run in detached mode
@@ -416,42 +462,78 @@ docker compose down
 
 ---
 
-## 📂 Project Directory Layout
+## 🚀 Part IV: Cloud Deployment Guide (Free & Production)
 
-```text
-practical-ai-in-industry/
-├── Dockerfile                      # Production container build
-├── docker-compose.yml              # Container orchestration
-├── pyproject.toml / pytest.ini      # Python configuration & test setup
-├── requirements.txt                # Locked Python runtime dependencies
-├── README.md                       # Comprehensive project documentation
-├── presentation.html               # Interactive Marp keynote slide deck
-├── presentation.md                 # Marp markdown slide source
-├── data/
-│   ├── hotels.json                 # 70 simulated OTA accommodations
-│   └── interactions.csv            # 34,000+ session logs (impressions, clicks, bookings)
-├── models/
-│   ├── ranking_model.joblib        # Trained HistGradientBoosting ranker
-│   └── recommender_artifacts.joblib# Cross-sell co-booking association artifacts
-├── src/
-│   ├── config.py                   # Centralized path & environment configuration
-│   ├── data/
-│   │   └── generator.py            # Synthetic Indonesian OTA data generator
-│   ├── models/
-│   │   ├── train_ranking.py        # Feature engineering & ranking model training
-│   │   ├── recommender.py          # Bayesian co-occurrence recommender builder
-│   │   └── pipeline.py             # Singleton in-memory serving pipeline
-│   └── api/
-│       ├── app.py                  # FastAPI initialization & latency middleware
-│       ├── routes.py               # REST API route handlers
-│       └── schemas.py              # Pydantic V2 request & response schemas
-├── static/
-│   ├── index.html                  # Responsive dark-glassmorphism dashboard
-│   ├── style.css                   # Custom CSS design system
-│   └── app.js                      # Client logic, live telemetry, and modal triggers
-└── tests/
-    ├── test_api.py                 # FastAPI integration tests
-    └── test_models.py              # Feature engineering & pipeline unit tests
+You can easily deploy this repository online so that recruiters, colleagues, and users can access your live API, Web Dashboard, and Presentation Deck anywhere in the world.
+
+### Option A: 1-Click Deploy on Render.com (Recommended Free Hosting)
+
+[Render](https://render.com) offers free cloud hosting with native Docker support and automatic GitHub synchronization.
+
+1. Create a free account at [render.com](https://render.com) using your GitHub account (`fallss`).
+2. Click **New +** $\rightarrow$ **Web Service**.
+3. Select and connect your repository: `fallss/practical-ai-in-industry`.
+4. Configure the service:
+   - **Name:** `practical-ai-service`
+   - **Environment:** `Docker`
+   - **Region:** `Singapore` (or closest to your users)
+   - **Plan:** `Free`
+5. *(Optional)* Render will automatically detect the included [render.yaml](render.yaml) blueprint!
+6. Click **Deploy Web Service**.
+7. In ~2–3 minutes, Render will build the container, train the models, and provide a live public HTTPS URL:
+   ```text
+   https://practical-ai-service.onrender.com
+   ```
+   - **Live Web UI:** `https://practical-ai-service.onrender.com`
+   - **Slide Deck:** `https://practical-ai-service.onrender.com/slides`
+   - **Swagger Docs:** `https://practical-ai-service.onrender.com/docs`
+
+---
+
+### Option B: Railway.app (Automatic Docker Deployment)
+
+[Railway](https://railway.app) is an ultra-fast platform with instant Docker deployment:
+
+1. Log in to [Railway](https://railway.app) via GitHub.
+2. Click **New Project** $\rightarrow$ **Deploy from GitHub repo**.
+3. Select `fallss/practical-ai-in-industry`.
+4. Railway will automatically detect the [Dockerfile](Dockerfile), build the application, and assign a live public domain under **Settings $\rightarrow$ Networking $\rightarrow$ Generate Domain**.
+
+---
+
+### Option C: Hugging Face Spaces (Free ML Portfolio Hosting)
+
+[Hugging Face Spaces](https://huggingface.co/spaces) is the premier portfolio platform for Machine Learning applications:
+
+1. Create an account at [huggingface.co](https://huggingface.co).
+2. Go to **New Space**.
+3. Set **Space Name** to `practical-ai-in-industry` and select **Docker** as the Space SDK (Blank template).
+4. Clone the Space repo or push this codebase to the Hugging Face Git remote:
+   ```bash
+   git remote add hf https://huggingface.co/spaces/YOUR_USERNAME/practical-ai-in-industry
+   git push hf main
+   ```
+5. Hugging Face will automatically launch the container and host your interactive dashboard for free.
+
+---
+
+### Option D: Self-Hosted Cloud VPS (Docker Compose)
+
+To host on your own Linux server (AWS EC2, DigitalOcean, Google Cloud Compute, Hetzner, or IDCloudHost):
+
+```bash
+# 1. SSH into your VPS
+ssh user@your-server-ip
+
+# 2. Clone the repository
+git clone https://github.com/fallss/practical-ai-in-industry.git
+cd practical-ai-in-industry
+
+# 3. Launch with Docker Compose
+docker compose up --build -d
+
+# 4. (Optional) Set up Nginx Reverse Proxy with Certbot SSL
+# Point your custom domain (e.g., ai.yourdomain.com) to port 8000
 ```
 
 ---

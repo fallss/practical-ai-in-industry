@@ -21,18 +21,19 @@ RUN pip install --upgrade pip && \
 # Copy source code and assets
 COPY src/ ./src/
 COPY static/ ./static/
+COPY presentation/ ./presentation/
 
 # Generate data and train ML models
 RUN python -m src.data.generator && \
     python -m src.models.train_ranking && \
     python -m src.models.recommender
 
-# Expose port
+# Expose port (default 8000)
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/api/v1/health || exit 1
 
-# Start production uvicorn server
-CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+# Start production uvicorn server (supports dynamic cloud PORT)
+CMD ["sh", "-c", "uvicorn src.api.app:app --host 0.0.0.0 --port ${PORT:-8000} --workers 2"]

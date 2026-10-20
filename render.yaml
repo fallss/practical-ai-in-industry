@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: practical-ai-service
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: free
+    region: singapore
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: info
+    healthCheckPath: /api/v1/health
