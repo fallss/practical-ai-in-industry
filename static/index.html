@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTA Production AI | Real-Time Hotel Search Ranking & Recommender</title>
+  <meta name="description" content="Production-grade AI system for hotel search ranking and cross-sell recommendation, featuring synchronous low-latency ML inference.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Background Glow Orbs -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Production ML Engine</h1>
+          <p class="brand-subtitle">Hotel Search Ranking & Cross-Sell Service</p>
+        </div>
+      </div>
+
+      <div class="system-status-pills">
+        <div class="status-pill status-live" id="system-health-pill">
+          <span class="pulse-dot"></span>
+          <span id="health-status-text">FastAPI: Live</span>
+        </div>
+        <div class="status-pill">
+          <span class="pill-label">Model:</span>
+          <span class="pill-value" id="model-name-text">GradientBoosting</span>
+        </div>
+        <div class="status-pill highlight">
+          <span class="pill-label">Inference:</span>
+          <span class="pill-value" id="header-latency-text">&lt; 10ms</span>
+        </div>
+        <a href="/docs" target="_blank" class="docs-btn" id="openapi-docs-btn">
+          <span>OpenAPI Docs</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Hero / Intro Banner -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="badge-wrapper">
+          <span class="tech-tag">tiket.com Inspired Architecture</span>
+          <span class="tech-tag purple">Synchronous ML Serving</span>
+        </div>
+        <h2 class="hero-title">Real-Time Search Ranking & Add-on Recommendations</h2>
+        <p class="hero-desc">
+          Experience low-latency pointwise conversion ranking and collaborative-filtering cross-sell recommendations running on FastAPI and Scikit-Learn.
+        </p>
+      </div>
+
+      <!-- Live Telemetry Card -->
+      <div class="telemetry-card">
+        <div class="telemetry-header">
+          <span class="telemetry-title">⚡ Production Telemetry</span>
+          <span class="telemetry-tag">Active</span>
+        </div>
+        <div class="telemetry-grid">
+          <div class="telem-item">
+            <span class="telem-label">Server Latency</span>
+            <span class="telem-value" id="telem-latency">-- ms</span>
+          </div>
+          <div class="telem-item">
+            <span class="telem-label">Model ROC-AUC</span>
+            <span class="telem-value" id="telem-auc">0.894</span>
+          </div>
+          <div class="telem-item">
+            <span class="telem-label">Candidates Scored</span>
+            <span class="telem-value" id="telem-total">--</span>
+          </div>
+          <div class="telem-item">
+            <span class="telem-label">Ranking Strategy</span>
+            <span class="telem-value highlight-cyan" id="telem-strategy">ML Ranking</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Search & Control Panel -->
+    <section class="controls-card">
+      <div class="controls-grid">
+        <!-- Destination City -->
+        <div class="control-group">
+          <label for="city-select">Destination City</label>
+          <div class="input-wrapper">
+            <select id="city-select">
+              <option value="All">All Destinations</option>
+              <option value="Bali" selected>Bali (Island of Gods)</option>
+              <option value="Jakarta">Jakarta (Metropolitan)</option>
+              <option value="Bandung">Bandung (Highlands)</option>
+              <option value="Yogyakarta">Yogyakarta (Cultural Hub)</option>
+              <option value="Surabaya">Surabaya (Business)</option>
+              <option value="Lombok">Lombok (Beaches & Trek)</option>
+              <option value="Labuan Bajo">Labuan Bajo (Komodo Islands)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Budget Target -->
+        <div class="control-group">
+          <div class="label-with-val">
+            <label for="budget-slider">Target Budget / Night</label>
+            <span class="slider-display" id="budget-display">Rp 1.500.000</span>
+          </div>
+          <input type="range" id="budget-slider" min="400000" max="4000000" step="100000" value="1500000">
+          <div class="range-limits">
+            <span>Rp 400K</span>
+            <span>Rp 4.0M</span>
+          </div>
+        </div>
+
+        <!-- Star Preference -->
+        <div class="control-group">
+          <label>Preferred Stars</label>
+          <div class="star-selector" id="star-selector">
+            <button class="star-btn" data-star="3">3 ★</button>
+            <button class="star-btn active" data-star="4">4 ★</button>
+            <button class="star-btn" data-star="5">5 ★</button>
+          </div>
+        </div>
+
+        <!-- Sort Strategy Toggle -->
+        <div class="control-group">
+          <label>Ranking Algorithm</label>
+          <div class="strategy-selector" id="strategy-selector">
+            <button class="strategy-btn active" data-sort="ml_ranking">
+              <span class="sparkle">⚡</span> ML Conversion AI
+            </button>
+            <button class="strategy-btn" data-sort="price_asc">
+              Lowest Price
+            </button>
+            <button class="strategy-btn" data-sort="rating_desc">
+              Top Rated
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section">
+      <div class="results-header">
+        <div>
+          <h3 class="results-title">Ranked Hotel Accommodations</h3>
+          <p class="results-subtitle" id="results-meta-text">Fetching matching accommodations...</p>
+        </div>
+        <div class="results-actions">
+          <button id="refresh-btn" class="refresh-btn" title="Re-query API">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            Re-run Scoring
+          </button>
+        </div>
+      </div>
+
+      <!-- Hotel Cards Grid -->
+      <div class="hotels-grid" id="hotels-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Cross-Sell Recommendation Modal -->
+  <div class="modal-overlay" id="cross-sell-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-pretitle">Co-booking Recommender Engine</span>
+          <h3 class="modal-hotel-name" id="modal-hotel-title">Hotel Name</h3>
+        </div>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="co-booking-banner">
+          <div class="co-icon">🎯</div>
+          <div>
+            <strong>"Customers who booked this accommodation also added:"</strong>
+            <p>Generated by item-to-activity collaborative filtering model (P(item | hotel) Bayesian prior).</p>
+          </div>
+        </div>
+
+        <div class="cross-sell-items" id="cross-sell-container">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-secondary" id="modal-cancel-btn">Close</button>
+          <button class="btn-primary" id="modal-confirm-btn">Confirm Reservation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
