@@ -8,7 +8,7 @@
 [![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-F7931E.svg?logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
 [![Docker](https://img.shields.io/badge/Container-Docker%20Ready-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 [![Tests: 7 Passed](https://img.shields.io/badge/PyTest-7%20Passed%20(100%25)-brightgreen.svg?logo=pytest&logoColor=white)](tests/)
-[![Latency](https://img.shields.io/badge/Serving%20Latency-%3C15ms-success.svg)](#-ml-model-pipeline--feature-engineering)
+[![Serving Latency](https://img.shields.io/badge/Serving%20Latency-%3C15ms-success.svg)](#ml-model-pipeline--feature-engineering)
 [![Presentation: Marp](https://img.shields.io/badge/Slides-Marp%20Interactive-0288d1.svg)](presentation.html)
 
 <p align="center">
@@ -16,7 +16,7 @@
   An executive keynote presentation deck detailing real-world AI implementation and career preparation, paired with an end-to-end, production-grade <b>Online Travel Agent (OTA) Search Ranking & Cross-Sell Recommendation Service</b>.
 </p>
 
-[Explore Slide Deck](presentation.html) • [Live Dashboard](http://localhost:8000) • [Swagger API Docs](http://localhost:8000/docs) • [Architecture](#-system-architecture)
+[Explore Slide Deck](presentation.html) • [Live Dashboard](http://localhost:8000) • [Swagger API Docs](http://localhost:8000/docs) • [Architecture](#system-architecture)
 
 ---
 
@@ -29,25 +29,25 @@
 
 ## 📑 Table of Contents
 
-1. [Executive Summary & Vision](#-executive-summary--vision)
-2. [Part I: The Presentation Deck (Theory & Industry Insights)](#-part-i-the-presentation-deck-theory--industry-insights)
+1. [Executive Summary & Vision](#executive-summary--vision)
+2. [Part I: The Presentation Deck (Theory & Industry Insights)](#part-i-the-presentation-deck-theory--industry-insights)
    - [Speaker & Background](#speaker--background)
-   - [Presentation Curriculum & Core Topics](#presentation-curriculum--core-topics)
+   - [Curriculum & Presentation Breakdown](#curriculum--presentation-breakdown)
    - [Key Industry Mental Models](#key-industry-mental-models)
    - [How to View and Deliver the Slides](#how-to-view-and-deliver-the-slides)
-3. [Part II: The Production ML Engine (Implementation)](#-part-ii-the-production-ml-engine-implementation)
+3. [Part II: The Production ML Engine (Implementation)](#part-ii-the-production-ml-engine-implementation)
    - [Problem Statement & OTA Context](#problem-statement--ota-context)
    - [System Architecture](#system-architecture)
    - [ML Model Pipeline & Feature Engineering](#ml-model-pipeline--feature-engineering)
    - [Cross-Sell Collaborative Filtering Engine](#cross-sell-collaborative-filtering-engine)
    - [Interactive Dashboard & Telemetry](#interactive-dashboard--telemetry)
-4. [Part III: Developer & Operations Guide](#-part-iii-developer--operations-guide)
+4. [Part III: Developer & Operations Guide](#part-iii-developer--operations-guide)
    - [Quick Start Installation](#quick-start-installation)
    - [API Reference & Endpoints](#api-reference--endpoints)
    - [Automated Testing with PyTest](#automated-testing-with-pytest)
    - [Production Docker Deployment](#production-docker-deployment)
-5. [Project Directory Layout](#-project-directory-layout)
-6. [Attribution & License](#-attribution--license)
+5. [Project Directory Layout](#project-directory-layout)
+6. [Attribution & License](#attribution--license)
 
 ---
 
@@ -80,19 +80,14 @@ This repository serves as a **complete bridge from theory to production**:
 - **Role:** Machine Learning Engineer at **tiket.com** (one of Southeast Asia's leading Online Travel Agents).
 - **Format:** [Marp](https://marp.app/) Markdown (`presentation.md`) & Standalone Interactive HTML (`presentation.html`).
 
-### Presentation Curriculum & Core Topics
+### Curriculum & Presentation Breakdown
 
-The presentation breaks down industrial AI into 8 structured modules:
+The presentation is organized into 8 sequential modules:
 
-```mermaid
-flowchart LR
-    A[1. Business Economics] --> B[2. Real-World Use Cases]
-    B --> C[3. The ML Engineer Role]
-    C --> D[4. Deployment Patterns]
-    D --> E[5. Modern Tech Stacks]
-    E --> F[6. Fundamental Skills]
-    F --> G[7. Career Preparation]
-    G --> H[8. Q&A & Action Plan]
+```text
+[1. Business Economics] ──▶ [2. Real-World Use Cases] ──▶ [3. The ML Engineer Role] ──▶ [4. Deployment Patterns]
+                                                                                                 │
+[8. Q&A & Action Plan]  ◀── [7. Career Preparation]   ◀── [6. Fundamental Skills]   ◀── [5. Modern Tech Stacks]
 ```
 
 1. **Why Data (and AI) Matters in Business:**
@@ -205,17 +200,23 @@ When a user searches for hotels in Bali or Jakarta with a specific budget, the p
 
 The search ranking model is formulated as a **pointwise conversion probability estimator** using `HistGradientBoostingClassifier`.
 
-#### Feature Engineering Vector ($X \in \mathbb{R}^{14}$):
-- `price_ratio`: $\frac{\text{price\_per\_night}}{\text{user\_budget}}$ (relative price alignment).
-- `price_diff_norm`: Normalized absolute price delta.
-- `price_gaussian`: $\exp\left(-0.5 \times (\text{price\_ratio} - 1.0)^2\right)$ (non-linear consumer utility curve).
-- `star_exact_match`: Binary indicator whether hotel stars equal preferred stars.
-- `star_diff`: $|\text{hotel\_stars} - \text{pref\_stars}|$.
-- `review_score` & `rating_scaled`: Calibrated user sentiment and satisfaction.
-- `log_review_count`: Log-transformed popularity confidence metric ($\log(1 + \text{reviews})$).
-- `distance_to_center_km` & `distance_decay`: $\exp(-\text{distance} / 10.0)$.
-- `discount_percent` & `discount_factor`: Price promotion incentives.
-- `value_score`: $\frac{\text{review\_score} \times 1,000,000}{\text{price\_per\_night} + 1}$ (price-to-quality ratio).
+#### Feature Engineering Vector (14 Dimensions):
+
+| Feature Name | Type | Mathematical Logic | Business Rationale |
+| :--- | :--- | :--- | :--- |
+| `price_ratio` | Float | `price_per_night / user_budget` | Relative price alignment to user's intended spend |
+| `price_diff_norm` | Float | `abs(price - budget) / budget` | Normalized price distance penalty |
+| `price_gaussian` | Float | `exp(-0.5 * (price_ratio - 1.0)^2)` | Non-linear consumer willingness curve |
+| `star_exact_match` | Binary | `1.0 if star_rating == pref_stars else 0.0` | Exact star preference match |
+| `star_diff` | Integer | `abs(star_rating - pref_stars)` | Delta penalty between actual and desired star tier |
+| `review_score` | Float | `review_score (3.0 - 5.0)` | Direct guest satisfaction score |
+| `rating_scaled` | Float | `(review_score - 3.5) / 1.5` | Standardized quality baseline |
+| `log_review_count` | Float | `log(1 + review_count)` | Logarithmic transformation to model diminishing returns |
+| `distance_to_center_km` | Float | Physical distance in km | Proximity to downtown and attractions |
+| `distance_decay` | Float | `exp(-distance / 10.0)` | Exponential decay penalty for distant properties |
+| `discount_percent` | Integer | Discount percentage (0% - 30%) | Deal promotion incentive |
+| `discount_factor` | Float | `discount_percent / 100.0` | Scaled promotional boost |
+| `value_score` | Float | `(review_score * 1,000,000) / (price + 1)` | Price-to-quality value metric |
 
 #### Evaluation Metrics:
 - **ROC-AUC:** `0.7459`
@@ -226,7 +227,11 @@ The search ranking model is formulated as a **pointwise conversion probability e
 
 The cross-sell recommender evaluates co-booking transaction patterns from over 34,000 historical session logs to calculate Bayesian-smoothed item association:
 
-$$P(\text{Item} \mid \text{Hotel}) = \frac{C(\text{Hotel}, \text{Item}) + \alpha}{N_{\text{Bookings}}(\text{Hotel}) + \beta} + \gamma \cdot \text{Prior}_{\text{Category}}(\text{City}, \text{Stars})$$
+```text
+Association Score = [ (Co_Occurrences(Hotel, Item) + 1.0) / (Total_Bookings(Hotel) + 10.0) ]
+                    + [ 0.3 * (City_Occurrences / Total_City_Bookings) ]
+                    + Domain_Priors(City, Star_Class)
+```
 
 - Suggests high-intent add-ons (Airport Shuttle, Private Dinner, Guided Diving, Balinese Spa) tailored specifically to the booked property's class and geography.
 - **Inference Latency:** `< 1.0ms`.
