@@ -48,10 +48,11 @@
    - [Automated Testing with PyTest](#automated-testing-with-pytest)
    - [Production Docker Deployment](#production-docker-deployment)
 6. [Part IV: Cloud Deployment Guide (Free & Production)](#part-iv-cloud-deployment-guide-free--production)
-   - [Option A: 1-Click Deploy on Render.com (Recommended Free Hosting)](#option-a-1-click-deploy-on-rendercom-recommended-free-hosting)
-   - [Option B: Railway.app (Automatic Docker Deployment)](#option-b-railwayapp-automatic-docker-deployment)
-   - [Option C: Hugging Face Spaces (Free ML Portfolio Hosting)](#option-c-hugging-face-spaces-free-ml-portfolio-hosting)
-   - [Option D: Self-Hosted Cloud VPS (Docker Compose)](#option-d-self-hosted-cloud-vps-docker-compose)
+   - [Option A: Streamlit Community Cloud (Easiest & 100% Free 1-Click Deploy)](#option-a-streamlit-community-cloud-easiest--100-free-1-click-deploy)
+   - [Option B: 1-Click Deploy on Render.com (Full FastAPI + Docker Microservice)](#option-b-1-click-deploy-on-rendercom-full-fastapi--docker-microservice)
+   - [Option C: Railway.app (Automatic Docker Deployment)](#option-c-railwayapp-automatic-docker-deployment)
+   - [Option D: Hugging Face Spaces (Free ML Portfolio Hosting)](#option-d-hugging-face-spaces-free-ml-portfolio-hosting)
+   - [Option E: Self-Hosted Cloud VPS (Docker Compose)](#option-e-self-hosted-cloud-vps-docker-compose)
 7. [Attribution & License](#attribution--license)
 
 ---
@@ -101,6 +102,7 @@ practical-ai-in-industry/
 │   ├── Dockerfile                     # Multi-stage production container build
 │   ├── docker-compose.yml             # Container orchestration
 │   ├── render.yaml                    # 1-Click Blueprint for Render.com deployment
+│   ├── streamlit_app.py               # Standalone Streamlit Cloud application
 │   ├── pyproject.toml / pytest.ini    # Python build and test configurations
 │   ├── requirements.txt               # Locked Python dependencies
 │   ├── LICENSE                        # GNU GPL-3.0 License
@@ -466,7 +468,26 @@ docker compose down
 
 You can easily deploy this repository online so that recruiters, colleagues, and users can access your live API, Web Dashboard, and Presentation Deck anywhere in the world.
 
-### Option A: 1-Click Deploy on Render.com (Recommended Free Hosting)
+### Option A: Streamlit Community Cloud (Easiest & 100% Free 1-Click Deploy)
+
+[Streamlit Community Cloud](https://share.streamlit.io) allows you to deploy and share your Machine Learning web applications directly from GitHub for free with zero DevOps setup.
+
+1. Go to **[share.streamlit.io](https://share.streamlit.io)** and log in with your GitHub account (`fallss`).
+2. Click **New app**.
+3. Fill in the repository details:
+   - **Repository:** `fallss/practical-ai-in-industry`
+   - **Branch:** `main`
+   - **Main file path:** `streamlit_app.py`
+4. Click **Deploy!**
+5. In ~1 minute, your interactive Streamlit application will be live at a public URL (e.g. `https://practical-ai-in-industry.streamlit.app`) featuring:
+   - Real-time ML hotel search ranking & budget filters.
+   - Interactive cross-sell add-on recommendations.
+   - Embedded interactive keynote slide deck.
+   - System architecture explanations.
+
+---
+
+### Option B: 1-Click Deploy on Render.com (Full FastAPI + Docker Microservice)
 
 [Render](https://render.com) offers free cloud hosting with native Docker support and automatic GitHub synchronization.
 
