@@ -25,16 +25,16 @@ CROSS_SELL_CATALOG = [
 ]
 
 HOTEL_TEMPLATES = [
-    ("The Haven Resort & Sanctuary", "Luxury resort offering tranquil scenery, lush gardens, and signature spa."),
-    ("Grand Merdeka Skyline", "Centrally located high-rise with skyline panoramic views and business amenities."),
-    ("Padma Heritage Boutique Villa", "Authentic artisanal design blended with world-class hospitality and private pools."),
-    ("Alila Eco Cliff Suites", "Modern minimalist cliffside suites with direct private infinity pool access."),
-    ("Aston Urban Express Hotel", "Vibrant, budget-friendly tech hotel equipped with high-speed internet and coworking cafe."),
-    ("Plataran Rainforest Haven", "Exclusive nature retreat nestled inside tropical greenery with eco-conscious dining."),
-    ("Aryaduta Grand Palace", "Classic 5-star elegance with majestic ballrooms and fine-dining restaurants."),
-    ("Katamama Coastal Retreat", "Contemporary beachfront escape featuring craft mixology, beach club access, and yoga."),
-    ("Santika Premiere Suites", "Comfortable, warm hospitality ideal for family vacations and corporate travelers."),
-    ("Swiss-Belresort Hilltop", "Boutique hillside hotel with valley views, heated pool, and barbecue terrace.")
+    ("The Haven Resort & Sanctuary", "Luxury resort offering tranquil scenery, lush gardens, and signature spa.", "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80"),
+    ("Grand Merdeka Skyline", "Centrally located high-rise with skyline panoramic views and business amenities.", "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"),
+    ("Padma Heritage Boutique Villa", "Authentic artisanal design blended with world-class hospitality and private pools.", "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80"),
+    ("Alila Eco Cliff Suites", "Modern minimalist cliffside suites with direct private infinity pool access.", "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80"),
+    ("Aston Urban Express Hotel", "Vibrant, budget-friendly tech hotel equipped with high-speed internet and coworking cafe.", "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"),
+    ("Plataran Rainforest Haven", "Exclusive nature retreat nestled inside tropical greenery with eco-conscious dining.", "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80"),
+    ("Aryaduta Grand Palace", "Classic 5-star elegance with majestic ballrooms and fine-dining restaurants.", "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80"),
+    ("Katamama Coastal Retreat", "Contemporary beachfront escape featuring craft mixology, beach club access, and yoga.", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"),
+    ("Santika Premiere Suites", "Comfortable, warm hospitality ideal for family vacations and corporate travelers.", "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80"),
+    ("Swiss-Belresort Hilltop", "Boutique hillside hotel with valley views, heated pool, and barbecue terrace.", "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=800&q=80")
 ]
 
 def generate_hotels(num_hotels: int = 60) -> List[Dict[str, Any]]:
@@ -45,7 +45,7 @@ def generate_hotels(num_hotels: int = 60) -> List[Dict[str, Any]]:
     
     for i in range(1, num_hotels + 1):
         city = random.choice(CITIES)
-        tmpl_name, tmpl_desc = random.choice(HOTEL_TEMPLATES)
+        tmpl_name, tmpl_desc, tmpl_img = random.choice(HOTEL_TEMPLATES)
         star = random.choices([3, 4, 5], weights=[0.3, 0.45, 0.25])[0]
         
         # Price correlates with stars and city
@@ -76,6 +76,7 @@ def generate_hotels(num_hotels: int = 60) -> List[Dict[str, Any]]:
             "distance_to_center_km": distance,
             "discount_percent": discount,
             "amenities": amenities,
+            "image_url": tmpl_img,
             "historical_ctr": round(float(np.random.beta(2, 20)), 4),
             "historical_conversion": round(float(np.random.beta(2, 50)), 4)
         }

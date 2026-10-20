@@ -22,6 +22,7 @@ class HotelItem(BaseModel):
     distance_to_center_km: float
     discount_percent: int
     amenities: List[str]
+    image_url: Optional[str] = None
     ml_score: Optional[float] = None
     badges: List[str] = []
 

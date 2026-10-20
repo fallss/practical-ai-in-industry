@@ -147,41 +147,49 @@ function renderHotels(hotels) {
 
     return `
       <div class="hotel-card" data-hotel-id="${hotel.hotel_id}">
-        <div>
-          <div class="hotel-card-top">
-            <div>
-              <h4 class="hotel-name">${hotel.name}</h4>
-              <span class="hotel-city-badge">📍 ${hotel.city} • ${hotel.distance_to_center_km} km to center</span>
+        <div class="hotel-image-wrapper">
+          <img src="${hotel.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'}" alt="${hotel.name}" class="hotel-image" loading="lazy">
+          <div class="hotel-image-gradient"></div>
+          <div class="hotel-image-badges-top">
+            <div class="image-badges-group">
+              ${badgesHtml}
             </div>
             ${mlScoreHtml}
           </div>
-
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem;">
-            <span style="color: #f59e0b; font-weight: 700;">${stars}</span>
-            <span style="color: #10b981; font-weight: 700;">${hotel.review_score}</span>
-            <span style="color: #64748b; font-size: 0.75rem;">(${hotel.review_count} reviews)</span>
-          </div>
-
-          <p class="hotel-desc">${hotel.description}</p>
-
-          <div class="badges-container">
-            ${badgesHtml}
-          </div>
         </div>
 
-        <div class="card-bottom">
+        <div class="hotel-card-body">
           <div>
-            ${hasDiscount ? `<span style="font-size: 0.75rem; color: #64748b; text-decoration: line-through;">${formatIDR(originalPrice)}</span>` : ""}
-            <div class="hotel-price">${formatIDR(hotel.price_per_night)}</div>
-            <span class="hotel-price-unit">per night • incl. taxes</span>
+            <div class="hotel-card-top">
+              <div>
+                <h4 class="hotel-name">${hotel.name}</h4>
+                <span class="hotel-city-badge">📍 ${hotel.city} • ${hotel.distance_to_center_km} km to center</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem;">
+              <span style="color: #f59e0b; font-weight: 700;">${stars}</span>
+              <span style="color: #10b981; font-weight: 700;">${hotel.review_score}</span>
+              <span style="color: #64748b; font-size: 0.75rem;">(${hotel.review_count} reviews)</span>
+            </div>
+
+            <p class="hotel-desc">${hotel.description}</p>
           </div>
 
-          <button class="book-btn" onclick="openCrossSellModal('${hotel.hotel_id}', '${encodeURIComponent(hotel.name)}')">
-            <span>Book & Add-ons</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </button>
+          <div class="card-bottom">
+            <div>
+              ${hasDiscount ? `<span style="font-size: 0.75rem; color: #64748b; text-decoration: line-through;">${formatIDR(originalPrice)}</span>` : ""}
+              <div class="hotel-price">${formatIDR(hotel.price_per_night)}</div>
+              <span class="hotel-price-unit">per night • incl. taxes</span>
+            </div>
+
+            <button class="book-btn" onclick="openCrossSellModal('${hotel.hotel_id}', '${encodeURIComponent(hotel.name)}')">
+              <span>Book & Add-ons</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     `;
